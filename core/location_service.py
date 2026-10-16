@@ -21,6 +21,7 @@ KNOWN_COORDS: Dict[str, Tuple[str, str, str, str]] = {
     "tlogosari": ("-7.625124", "109.684125", "Ayah", "Kabupaten Kebumen"),
     "karanganyar": ("-7.596200", "110.952100", "Karanganyar", "Kabupaten Karanganyar"),
     "sragen": ("-7.426600", "111.022200", "Sragen", "Kabupaten Sragen"),
+    "mojosari": ("-7.371420", "110.712350", "Karanggede", "Kabupaten Boyolali"),
 }
 
 INDONESIAN_COMMON_WORDS = {
@@ -183,7 +184,10 @@ def get_personel_list() -> List[str]:
             for line in f:
                 line_clean = line.strip()
                 if line_clean and not line_clean.startswith("#"):
-                    personel.append(line_clean)
+                    # Bersihkan prefix penomoran (misal: "1. ", "15. ") agar nama tampil rapi
+                    clean_name = re.sub(r"^\d+[\.\)]\s*", "", line_clean).strip()
+                    if clean_name and clean_name not in personel:
+                        personel.append(clean_name)
     except Exception as e:
         print(f"Gagal membaca Nama Personel.txt: {e}")
     return personel

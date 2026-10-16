@@ -385,7 +385,13 @@ if "audit_report" not in st.session_state:
     st.session_state.audit_report = None
 
 if "gemini_api_key" not in st.session_state:
-    st.session_state.gemini_api_key = os.environ.get("GEMINI_API_KEY", DEFAULT_API_KEY)
+    _key_cloud = ""
+    try:
+        if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+            _key_cloud = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        pass
+    st.session_state.gemini_api_key = _key_cloud or os.environ.get("GEMINI_API_KEY", DEFAULT_API_KEY)
 
 # -------------------------------------------------------------
 # HELPER: REAL-TIME AUDIT CALCULATION

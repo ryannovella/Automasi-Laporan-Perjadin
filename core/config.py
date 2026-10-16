@@ -50,5 +50,23 @@ SHADOW_OPACITY    = 235
 TEXT_COLOR        = (255, 255, 255, 255)
 
 # Gemini AI API Configuration for Report Elaboration
-DEFAULT_API_KEY = "AQ.Ab8RN6KlEmE5Z-3eOlCEVhQCNL8E3XTj6xE_84eaI1ZhLt8cHQ"
+# Membaca secara aman dari .streamlit/secrets.toml, environment variable, atau Streamlit Cloud Secrets
+def _get_default_api_key() -> str:
+    if "GEMINI_API_KEY" in os.environ and os.environ["GEMINI_API_KEY"]:
+        return os.environ["GEMINI_API_KEY"]
+    secrets_file = os.path.join(BASE_DIR, ".streamlit", "secrets.toml")
+    if os.path.exists(secrets_file):
+        try:
+            with open(secrets_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    clean_l = line.strip()
+                    if clean_l.startswith("GEMINI_API_KEY") and "=" in clean_l:
+                        parts = clean_l.split("=", 1)
+                        if len(parts) == 2:
+                            return parts[1].strip().strip('"').strip("'")
+        except Exception:
+            pass
+    return ""
+
+DEFAULT_API_KEY = _get_default_api_key()
 GEMINI_MODEL    = "gemini-3.1-flash-lite"
