@@ -21,7 +21,20 @@ for _d in [DATA_DIR, UPLOADS_DIR, OUTPUT_DIR, LOGS_DIR, TEMP_MEDIA_DIR, TEMPLATE
     os.makedirs(_d, exist_ok=True)
 
 # Official Stamping Standards (Kementerian Pekerjaan Umum / Pamsimas)
-STAMP_FONT_PATH    = "C:\\Windows\\Fonts\\arial.ttf"
+def _resolve_stamp_font() -> str:
+    candidates = [
+        "C:\\Windows\\Fonts\\arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+        "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            return p
+    return "arial.ttf"
+
+STAMP_FONT_PATH    = _resolve_stamp_font()
 FALLBACK_FONT_PATH = "arial.ttf"
 
 # Watermark typography & proportions
