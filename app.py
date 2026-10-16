@@ -39,92 +39,351 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Professional Ministry of Public Works (PU) Style
+# Custom CSS for World-Class Executive Ministry of Public Works (PU) Style
 st.markdown("""
 <style>
-    /* Main Theme Typography */
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    /* Google Fonts: Plus Jakarta Sans with full variable weights */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
     
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
+    html, body, [class*="css"], .stApp {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        color: #0f172a;
+        background-color: #f8fafc;
     }
-    
-    /* Header Brand Card */
+
+    /* Streamlit Main Container Optimization */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 4rem !important;
+        max-width: 1280px !important;
+    }
+
+    /* Executive PU Brand Banner (Double-Bezel & Radial Ambient Glow) */
     .pu-brand-banner {
-        background: linear-gradient(135deg, #0d3b66 0%, #001e3d 100%);
-        color: white;
-        padding: 24px 28px;
-        border-radius: 12px;
-        margin-bottom: 24px;
-        border-left: 6px solid #f4d35e;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        background: radial-gradient(120% 120% at 50% 0%, #163e66 0%, #0d2945 45%, #071728 100%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 32px 36px;
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 12px 36px -4px rgba(7, 23, 40, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .pu-brand-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #d49a37 0%, #f3c267 35%, #0d2945 100%);
+    }
+    .pu-banner-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(212, 154, 55, 0.15);
+        border: 1px solid rgba(212, 154, 55, 0.35);
+        color: #f3c267;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        margin-bottom: 14px;
+    }
+    .pu-banner-eyebrow .dot {
+        width: 6px;
+        height: 6px;
+        background-color: #f3c267;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #f3c267;
     }
     .pu-brand-banner h1 {
         color: #ffffff;
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0 0 6px 0;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.25;
+        margin: 0 0 8px 0;
     }
     .pu-brand-banner p {
-        color: #e0e6ed;
+        color: #cbd5e1;
         font-size: 14px;
+        line-height: 1.55;
         margin: 0;
+        max-width: 860px;
     }
-    
-    /* Audit Card */
-    .audit-card {
-        background: #f8fafc;
+    .pu-banner-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #10b981;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.25);
+        padding: 4px 10px;
+        border-radius: 8px;
+        margin-top: 14px;
+    }
+    .pu-banner-badge .pulse {
+        width: 6px;
+        height: 6px;
+        background-color: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #10b981;
+    }
+
+    /* Segmented Control Pill Tabs (Replaces default Streamlit red-line tabs) */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 6px;
+        background-color: #f1f5f9;
+        padding: 6px;
+        border-radius: 14px;
         border: 1px solid #e2e8f0;
+        margin-bottom: 24px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 42px;
         border-radius: 10px;
-        padding: 16px 20px;
-        margin-bottom: 20px;
+        padding: 0 18px;
+        background-color: transparent;
+        border: none !important;
+        color: #64748b;
+        font-weight: 500;
+        font-size: 13.5px;
+        letter-spacing: -0.01em;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .audit-badge-complete {
-        background: #e6f4ea;
-        color: #137333;
-        font-weight: 600;
-        padding: 3px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        display: inline-block;
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #0f2942;
+        background-color: rgba(255, 255, 255, 0.65);
     }
-    .audit-badge-incomplete {
-        background: #fce8e6;
-        color: #c5221f;
-        font-weight: 600;
-        padding: 3px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        display: inline-block;
+    .stTabs [aria-selected="true"] {
+        background-color: #ffffff !important;
+        color: #0f2942 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.08), 0 1px 3px -1px rgba(15, 23, 42, 0.04) !important;
     }
-    
-    /* Section Headers */
+    .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {
+        display: none !important;
+    }
+
+    /* Section Titles with Icon Framing */
     .section-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #0d3b66;
-        margin-top: 15px;
-        margin-bottom: 12px;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #0f2942;
+        margin-top: 20px;
+        margin-bottom: 14px;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
     }
-    
-    /* Village Card */
+
+    /* Cards & Container Architecture */
+    .audit-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+    .audit-badge-complete {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        color: #065f46;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .audit-badge-incomplete {
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #9f1239;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* Village Container Box (Double-bezel look) */
     .village-box {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        border-radius: 14px;
+        padding: 22px 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+        position: relative;
     }
-    
-    /* Button Styles */
-    .stButton>button {
+    .village-box-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .village-box-header h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f2942;
+        letter-spacing: -0.01em;
+    }
+
+    /* Buttons: Linear / Apple Inspired Micro-Physics */
+    .stButton > button {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 13.5px;
+        letter-spacing: -0.01em;
+        padding: 8px 18px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #0f2942;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    .stButton > button:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+        color: #0f2942;
+    }
+    .stButton > button:active {
+        transform: scale(0.98);
+    }
+
+    /* Primary Buttons (Deep PU Navy Gradient) */
+    .stButton > button[kind="primary"], button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #0f2942 0%, #071728 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        box-shadow: 0 4px 14px rgba(15, 41, 66, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
+    }
+    .stButton > button[kind="primary"]:hover, button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #163e66 0%, #0d2945 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(15, 41, 66, 0.4) !important;
+    }
+    .stButton > button[kind="primary"]:active, button[data-testid="baseButton-primary"]:active {
+        transform: scale(0.98);
+    }
+
+    /* Download Buttons */
+    .stDownloadButton > button {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        color: #ffffff !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3) !important;
+    }
+    .stDownloadButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4) !important;
+    }
+
+    /* Form Inputs & Controls Focus Ring (Overriding default red) */
+    div[data-baseweb="input"] > div, 
+    div[data-baseweb="select"] > div, 
+    div[data-baseweb="base-input"] > input, 
+    textarea.stTextArea {
+        border-radius: 10px !important;
+        border-color: #cbd5e1 !important;
+        background-color: #ffffff !important;
+        font-size: 13.5px !important;
+        color: #0f172a !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    div[data-baseweb="input"]:focus-within, 
+    div[data-baseweb="select"]:focus-within, 
+    textarea:focus {
+        border-color: #0f2942 !important;
+        box-shadow: 0 0 0 3px rgba(15, 41, 66, 0.12) !important;
+    }
+
+    /* File Uploader Custom Styling */
+    div[data-testid="stFileUploader"] {
+        border-radius: 14px;
+        background-color: #ffffff;
+        padding: 6px;
+    }
+    div[data-testid="stFileUploader"] section {
+        border: 2px dashed #cbd5e1 !important;
+        border-radius: 12px !important;
+        background-color: #f8fafc !important;
+        padding: 24px 16px !important;
+        transition: all 0.2s ease !important;
+    }
+    div[data-testid="stFileUploader"] section:hover {
+        border-color: #0f2942 !important;
+        background-color: #f1f5f9 !important;
+    }
+
+    /* Expanders */
+    div[data-testid="stExpander"] {
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+        margin-bottom: 12px !important;
+    }
+    div[data-testid="stExpander"] summary {
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        color: #0f2942 !important;
+    }
+
+    /* Sidebar Refinements */
+    section[data-testid="stSidebar"] {
+        background-color: #ffffff;
+        border-right: 1px solid #e2e8f0;
+    }
+    section[data-testid="stSidebar"] .block-container {
+        padding-top: 2rem !important;
+    }
+
+    /* Progress Bar (Gold to Navy Gradient) */
+    div[data-testid="stProgress"] > div > div > div > div {
+        background: linear-gradient(90deg, #d49a37 0%, #0f2942 100%) !important;
+        border-radius: 9999px !important;
+    }
+
+    /* Code block for filenames */
+    .filename-chip {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13.5px;
+        font-weight: 600;
+        background: #0f2942;
+        color: #f3c267;
+        padding: 8px 16px;
         border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.2s ease;
+        display: inline-block;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        word-break: break-all;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -194,10 +453,18 @@ def get_current_audit_status():
 # -------------------------------------------------------------
 # BANNER HEADER
 # -------------------------------------------------------------
+# BANNER HEADER
+# -------------------------------------------------------------
 st.markdown("""
 <div class="pu-brand-banner">
-    <h1>📘 Automasi Pembuatan Dokumen Laporan Perjadin</h1>
-    <p>Monitoring & Evaluasi Kegiatan Pamsimas — Balai Prasarana Permukiman Wilayah (BPPW / BPBPK) Jawa Tengah, Kementerian Pekerjaan Umum</p>
+    <div class="pu-banner-eyebrow">
+        <span class="dot"></span> KEMENTERIAN PEKERJAAN UMUM • BPPW JAWA TENGAH
+    </div>
+    <h1>Automasi Dokumen Laporan Monev Perjadin</h1>
+    <p>Platform cerdas audit kelengkapan berkas, elaborasi catatan teknis resmi, normalisasi timestamp foto lapangan, dan penyusunan dokumen laporan perjalanan dinas Kegiatan Pamsimas.</p>
+    <div class="pu-banner-badge">
+        <span class="pulse"></span> Sistem Otomasi Aktif • TA 2026
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -205,7 +472,12 @@ st.markdown("""
 # SIDEBAR: LIVE AUDIT & QUICK CONTROLS
 # -------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### 📊 Status Kelengkapan Dokumen")
+    st.markdown("""
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+        <span style="font-size:16px;">📊</span>
+        <span style="font-size:14px; font-weight:700; color:#0f2942; letter-spacing:-0.01em;">Status Kelengkapan Dokumen</span>
+    </div>
+    """, unsafe_allow_html=True)
     score_pct, comp_cnt, tot_cnt, audit_items = get_current_audit_status()
     
     st.progress(score_pct / 100.0)
@@ -217,12 +489,19 @@ with st.sidebar:
         st.warning(f"**{score_pct}% Terisi** ({tot_cnt - comp_cnt} Komponen Belum Lengkap)")
 
     # Realtime Checklist
-    with st.expander("Lihat Rincian Butir Audit", expanded=(score_pct < 100)):
+    with st.expander("Rincian 8 Komponen Audit", expanded=(score_pct < 100)):
         for it in audit_items:
-            if it["status"] == "complete":
-                st.markdown(f"✅ **{it['label']}**: <span style='font-size:12px;color:#137333;'>{it['message']}</span>", unsafe_allow_html=True)
-            else:
-                st.markdown(f"⚠️ **{it['label']}**: <span style='font-size:12px;color:#c5221f;'>{it['message']}</span>", unsafe_allow_html=True)
+            badge_cls = "audit-badge-complete" if it["status"] == "complete" else "audit-badge-incomplete"
+            badge_icon = "✓" if it["status"] == "complete" else "!"
+            st.markdown(f"""
+            <div style="border-bottom:1px solid #f1f5f9; padding:8px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+                    <strong style="font-size:12.5px; color:#0f2942;">{it['label']}</strong>
+                    <span class="{badge_cls}">{badge_icon} {'Lengkap' if it['status'] == 'complete' else 'Kurang'}</span>
+                </div>
+                <div style="font-size:11.5px; color:#64748b; line-height:1.35;">{it['message']}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("### ⚙️ Pengaturan Cepat")
@@ -324,15 +603,22 @@ with tab_import:
             score = audit_meta.get("score_percent", 0)
 
             # Audit Summary Card
+            score_color = "#059669" if score >= 80 else "#e11d48"
             st.markdown(f"""
             <div class="audit-card">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
                     <div>
-                        <h4 style="margin:0; color:#0d3b66;">Hasil Audit Kelengkapan: {uploaded_docx.name}</h4>
-                        <p style="margin:4px 0 0 0; color:#555;">{audit_meta.get('summary')}</p>
+                        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;">HASIL AUDIT RESMI KELENGKAPAN</div>
+                        <h3 style="margin:0; font-size:18px; font-weight:700; color:#0f2942;">{uploaded_docx.name}</h3>
+                        <p style="margin:6px 0 0 0; font-size:13.5px; color:#475569;">{audit_meta.get('summary')}</p>
                     </div>
-                    <div style="font-size:28px; font-weight:700; color:{'#137333' if score >= 80 else '#c5221f'};">
-                        {score}%
+                    <div style="text-align:right;">
+                        <div style="font-size:38px; font-weight:800; color:{score_color}; line-height:1; font-family:'Plus Jakarta Sans', sans-serif;">
+                            {score}%
+                        </div>
+                        <div style="font-size:12px; font-weight:600; color:{score_color}; margin-top:4px;">
+                            {'Kategori: Memenuhi Syarat' if score >= 80 else 'Kategori: Perlu Dilengkapi'}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -356,11 +642,14 @@ with tab_import:
                 with target_col:
                     badge_cls = "audit-badge-complete" if it["status"] == "complete" else "audit-badge-incomplete"
                     badge_txt = "LENGKAP" if it["status"] == "complete" else "BELUM LENGKAP"
+                    badge_icon = "✓" if it["status"] == "complete" else "!"
                     st.markdown(f"""
-                    <div style="border-bottom:1px solid #eee; padding:8px 0;">
-                        <span class="{badge_cls}">{badge_txt}</span> 
-                        <strong>{it['label']}</strong><br/>
-                        <span style="font-size:13px; color:#555;">{it['message']}</span>
+                    <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; margin-bottom:10px; box-shadow:0 1px 2px rgba(0,0,0,0.02);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong style="font-size:13.5px; color:#0f2942;">{it['label']}</strong>
+                            <span class="{badge_cls}">{badge_icon} {badge_txt}</span>
+                        </div>
+                        <div style="font-size:12.5px; color:#64748b; line-height:1.4;">{it['message']}</div>
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -484,9 +773,17 @@ with tab_desa:
     villages = rd.get("villages", [])
 
     for v_idx, v_item in enumerate(villages):
+        v_desa_label = f" — Desa {v_item.get('desa')}" if v_item.get("desa") else ""
+        v_kec_label = f"Kec. {v_item.get('kecamatan')}" if v_item.get("kecamatan") else "Kecamatan Terpilih"
         st.markdown(f"""
-        <div class="village-box">
-            <h4 style="margin:0 0 10px 0; color:#0d3b66;">📍 Lokasi Desa #{v_idx+1}</h4>
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:12px 18px; margin-top:14px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:16px;">📍</span>
+                <strong style="font-size:14.5px; color:#0f2942;">Lokasi Desa #{v_idx+1}{v_desa_label}</strong>
+            </div>
+            <span style="font-size:11.5px; font-weight:600; color:#0f2942; background:#f1f5f9; border:1px solid #e2e8f0; padding:3px 10px; border-radius:6px;">
+                {v_kec_label}
+            </span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -740,26 +1037,43 @@ with tab_export:
     
     st.markdown(f"""
     <div class="audit-card">
-        <h4 style="margin:0 0 6px 0; color:#0d3b66;">Format Nama File Output (Ringkas & Padat diawali Tanggal Dinas):</h4>
-        <code style="font-size:16px; font-weight:700; color:#0d3b66;">{out_fname}</code>
+        <div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">FORMAT NAMA BERKAS KEDINASAN RESMI (.DOCX):</div>
+        <div class="filename-chip">{out_fname}</div>
+        <div style="font-size:12.5px; color:#64748b; margin-top:10px; line-height:1.4;">
+            💡 <strong>Standar BPPW/BPBPK Jawa Tengah:</strong> Nama berkas diawali rentang tanggal perjalanan dinas untuk mempermudah audit dan pengarsipan digital.
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     # Ringkasan Eksekutif Sebelum Cetak
     col_sum1, col_sum2 = st.columns(2)
     with col_sum1:
-        st.markdown("**Administrasi & Jadwal:**")
-        st.write(f"- **Kabupaten:** Kabupaten {rd.get('kabupaten')}")
-        st.write(f"- **Nomor SPT:** {rd.get('nomor_spt') or '-(Belum Diisi)-'}")
-        st.write(f"- **Jadwal Dinas:** {rd.get('trip_start_date')} s/d {rd.get('trip_end_date')}")
-        st.write(f"- **Tanggal Laporan:** {rd.get('tanggal_laporan')} ({rd.get('tempat_pembuatan')})")
-        st.write(f"- **Personel Pelaksana:** {len(rd.get('pelaksana', []))} orang")
+        st.markdown(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,0.02);">
+            <div style="font-size:12px; font-weight:700; color:#0f2942; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">📋 Administrasi & Jadwal</div>
+            <div style="font-size:13px; color:#334155; line-height:1.7;">
+                <div><strong>Kabupaten:</strong> Kabupaten {rd.get('kabupaten')}</div>
+                <div><strong>Nomor SPT:</strong> {rd.get('nomor_spt') or '<em>(Belum Diisi)</em>'}</div>
+                <div><strong>Jadwal Dinas:</strong> {rd.get('trip_start_date')} s/d {rd.get('trip_end_date')}</div>
+                <div><strong>Tanggal Laporan:</strong> {rd.get('tanggal_laporan')} ({rd.get('tempat_pembuatan')})</div>
+                <div><strong>Pelaksana:</strong> {len(rd.get('pelaksana', []))} Personel (Format Zig-Zag PU)</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     with col_sum2:
-        st.markdown("**Cakupan Wilayah & Foto:**")
-        v_list_str = ", ".join([v.get("desa") for v in rd.get("villages", []) if v.get("desa")]) or "-(Belum Ada)-"
-        st.write(f"- **Daftar Desa:** {v_list_str}")
-        st.write(f"- **Total Foto Lapangan:** {len(st.session_state.photos)} foto")
+        v_list_str = ", ".join([v.get("desa") for v in rd.get("villages", []) if v.get("desa")]) or "(Belum Ada)"
+        st.markdown(f"""
+        <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,0.02);">
+            <div style="font-size:12px; font-weight:700; color:#0f2942; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">🏘️ Cakupan Wilayah & Foto</div>
+            <div style="font-size:13px; color:#334155; line-height:1.7;">
+                <div><strong>Daftar Desa:</strong> {v_list_str}</div>
+                <div><strong>Total Dokumentasi:</strong> {len(st.session_state.photos)} Foto Terlampir</div>
+                <div><strong>Watermark PU:</strong> Font Arial Drop-Shadow (Kaidah KBBI)</div>
+                <div><strong>Format Dokumen:</strong> Word .docx (Kop & Outline Resmi PU)</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
 
     st.markdown("---")
     
