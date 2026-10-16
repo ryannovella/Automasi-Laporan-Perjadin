@@ -462,7 +462,7 @@ def build_compact_report_filename(report_data: Dict[str, Any], villages: List[Di
     else:
         date_prefix = datetime.now().strftime("%d-%m-%Y")
 
-    kab_raw = report_data.get("kabupaten", "Magelang").replace("Kabupaten", "").strip()
+    kab_raw = (report_data.get("kabupaten") or "").replace("Kabupaten", "").strip()
     kab_slug = re.sub(r'[^A-Za-z0-9]', '', kab_raw) or "Wilayah"
 
     v_names = [v.get("desa", "").strip() for v in villages if v.get("desa", "").strip()]
@@ -495,12 +495,12 @@ def generate_monev_docx(
 
     doc = docx.Document(TEMPLATE_DOCX)
     
-    kabupaten = report_data.get("kabupaten", "Magelang").replace("Kabupaten", "").strip()
-    tahun = report_data.get("tahun", "2026")
+    kabupaten = (report_data.get("kabupaten") or "").replace("Kabupaten", "").strip()
+    tahun = report_data.get("tahun", "") or str(datetime.now().year)
     nomor_spt = report_data.get("nomor_spt", "")
     tgl_spt = format_to_indonesian_date(report_data.get("tanggal_spt", ""))
     tgl_lap = format_to_indonesian_date(report_data.get("tanggal_laporan", ""))
-    tempat_lap = report_data.get("tempat_pembuatan", "Semarang")
+    tempat_lap = report_data.get("tempat_pembuatan", "") or "Semarang"
     villages = report_data.get("villages", [])
     pelaksana = report_data.get("pelaksana", [])
 

@@ -353,26 +353,22 @@ st.markdown("""
 # SESSION STATE INITIALIZATION
 # -------------------------------------------------------------
 if "report_data" not in st.session_state:
-    today_dt = date.today()
     st.session_state.report_data = {
-        "kabupaten": "Magelang",
-        "tahun": "2026",
-        "nomor_spt": "CK1201/SPT/BPBPK-JT/2026",
-        "tanggal_spt": (today_dt - timedelta(days=2)).strftime("%Y-%m-%d"),
-        "trip_start_date": today_dt.strftime("%Y-%m-%d"),
-        "trip_end_date": (today_dt + timedelta(days=2)).strftime("%Y-%m-%d"),
-        "tanggal_laporan": (today_dt + timedelta(days=3)).strftime("%Y-%m-%d"),
-        "tempat_pembuatan": "Semarang",
-        "pelaksana": [
-            "Rey (Teknik Penyehatan Lingkungan Ahli Muda)",
-            "Ahmad Fauzi (Fasilitator Teknik Lapangan)"
-        ],
+        "kabupaten": "",
+        "tahun": "",
+        "nomor_spt": "",
+        "tanggal_spt": "",
+        "trip_start_date": "",
+        "trip_end_date": "",
+        "tanggal_laporan": "",
+        "tempat_pembuatan": "",
+        "pelaksana": [],
         "villages": [
             {
                 "id": "v_1",
-                "desa": "Jambewangi",
-                "kecamatan": "Pakis",
-                "notes": "Pekerjaan konstruksi fisik sumur bor dalam mencapai 45,20%. Penyerapan dana termin I 40,00%. Pipa transmisi HDPE 2 inch terpasang sepanjang 1.200 meter. Rencana sambungan rumah 75 SR.",
+                "desa": "",
+                "kecamatan": "",
+                "notes": "",
                 "narrative": ""
             }
         ]
@@ -451,12 +447,13 @@ with kpi_c2:
     st.metric(
         label="Kabupaten & Tahun",
         value=f"{rd.get('kabupaten') or 'Belum Dipilih'}",
-        delta=f"TA {rd.get('tahun', '2026')}"
+        delta=f"TA {rd.get('tahun')}" if rd.get('tahun') else "TA Belum Diisi"
     )
 with kpi_c3:
+    valid_villages = [v for v in rd.get('villages', []) if v.get('desa')]
     st.metric(
         label="Cakupan Wilayah Monev",
-        value=f"{len(rd.get('villages', []))} Desa",
+        value=f"{len(valid_villages)} Desa" if valid_villages else "0 Desa",
         delta=f"{len(rd.get('pelaksana', []))} Personel Bertugas"
     )
 with kpi_c4:
@@ -497,60 +494,25 @@ with st.sidebar:
             """, unsafe_allow_html=True)
 
     st.markdown("---")
-    st.markdown("### ⚙️ Pengaturan Cepat")
-    
-    # Preset Demo
-    if st.button("🔄 Muat Contoh Data Cepat (Demo)", use_container_width=True):
-        st.session_state.report_data = {
-            "kabupaten": "Magelang",
-            "tahun": "2026",
-            "nomor_spt": "CK1201/SPT/BPBPK-JT/2026",
-            "tanggal_spt": "2026-08-11",
-            "trip_start_date": "2026-08-13",
-            "trip_end_date": "2026-08-15",
-            "tanggal_laporan": "2026-08-16",
-            "tempat_pembuatan": "Semarang",
-            "pelaksana": [
-                "Rey (Teknik Penyehatan Lingkungan Ahli Muda)",
-                "Bambang S. (Teknik Pengairan Ahli Pertama)",
-                "Ahmad Fauzi (Fasilitator Teknik Lapangan)"
-            ],
-            "villages": [
-                {
-                    "id": "v_1",
-                    "desa": "Jambewangi",
-                    "kecamatan": "Pakis",
-                    "notes": "Pekerjaan fisik sumur bor dalam mencapai 45,20%. Penyerapan dana tahap I 40,00%. Pipa HDPE 2 inch telah terpasang. Target 75 sambungan rumah.",
-                    "narrative": ""
-                },
-                {
-                    "id": "v_2",
-                    "desa": "Tanjungsari",
-                    "kecamatan": "Windusari",
-                    "notes": "Pekerjaan bak penampung reservoir air selesai 100%. Pemasangan pompa celup submersibel siap uji coba commissioning.",
-                    "narrative": ""
-                }
-            ]
-        }
-        st.success("Contoh data Monev Magelang berhasil dimuat!")
-        st.rerun()
+    st.markdown("### ⚙️ Pengaturan Formulir")
 
     # Reset Data
-    if st.button("🗑️ Reset Semua Formulir", use_container_width=True):
+    if st.button("🗑️ Kosongkan / Reset Semua Formulir", use_container_width=True):
         st.session_state.report_data = {
-            "kabupaten": "Magelang",
-            "tahun": "2026",
+            "kabupaten": "",
+            "tahun": "",
             "nomor_spt": "",
             "tanggal_spt": "",
             "trip_start_date": "",
             "trip_end_date": "",
             "tanggal_laporan": "",
-            "tempat_pembuatan": "Semarang",
+            "tempat_pembuatan": "",
             "pelaksana": [],
             "villages": [{"id": "v_1", "desa": "", "kecamatan": "", "notes": "", "narrative": ""}]
         }
         st.session_state.photos = []
-        st.info("Formulir telah dikosongkan.")
+        st.session_state.audit_report = None
+        st.info("Seluruh data formulir telah dikosongkan.")
         st.rerun()
 
     st.markdown("---")
@@ -652,27 +614,29 @@ with tab_import:
 with tab_admin:
     rd = st.session_state.report_data
     all_kabs = get_all_kabupaten()
-    default_kab_idx = all_kabs.index(rd.get("kabupaten", "Magelang")) if rd.get("kabupaten") in all_kabs else 0
+    kab_options = ["-- Pilih Kabupaten --"] + all_kabs
+    cur_kab = rd.get("kabupaten", "")
+    kab_idx = kab_options.index(cur_kab) if cur_kab in kab_options else 0
 
     with st.container(border=True):
         st.markdown('<div class="section-title">📋 Data Surat Perintah Tugas (SPT) & Jadwal Pelaksanaan</div>', unsafe_allow_html=True)
         col_adm1, col_adm2, col_adm3 = st.columns(3)
         with col_adm1:
-            sel_kab = st.selectbox("Kabupaten Kegiatan", all_kabs, index=default_kab_idx)
-            rd["kabupaten"] = sel_kab
-            rd["nomor_spt"] = st.text_input("Nomor SPT Resmi", value=rd.get("nomor_spt", ""))
+            sel_kab = st.selectbox("Kabupaten Kegiatan", kab_options, index=kab_idx)
+            rd["kabupaten"] = sel_kab if sel_kab != "-- Pilih Kabupaten --" else ""
+            rd["nomor_spt"] = st.text_input("Nomor SPT Resmi", value=rd.get("nomor_spt", ""), placeholder="Contoh: CK1201/SPT/BPBPK-JT/2026")
 
         with col_adm2:
             spt_val = None
             if rd.get("tanggal_spt"):
                 try: spt_val = datetime.strptime(rd["tanggal_spt"], "%Y-%m-%d").date()
                 except Exception: pass
-            sel_tgl_spt = st.date_input("Tanggal SPT", value=spt_val or date.today())
-            rd["tanggal_spt"] = sel_tgl_spt.strftime("%Y-%m-%d")
-            rd["tempat_pembuatan"] = st.text_input("Tempat Pembuatan Laporan", value=rd.get("tempat_pembuatan", "Semarang"))
+            sel_tgl_spt = st.date_input("Tanggal SPT", value=spt_val, format="YYYY-MM-DD")
+            rd["tanggal_spt"] = sel_tgl_spt.strftime("%Y-%m-%d") if sel_tgl_spt else ""
+            rd["tempat_pembuatan"] = st.text_input("Tempat Pembuatan Laporan", value=rd.get("tempat_pembuatan", ""), placeholder="Contoh: Semarang")
 
         with col_adm3:
-            rd["tahun"] = st.text_input("Tahun Anggaran (TA)", value=rd.get("tahun", "2026"))
+            rd["tahun"] = st.text_input("Tahun Anggaran (TA)", value=rd.get("tahun", ""), placeholder="Contoh: 2026")
 
         st.markdown("<hr style='margin: 16px 0; border: none; border-top: 1px solid #f1f5f9;'>", unsafe_allow_html=True)
         
@@ -682,28 +646,36 @@ with tab_admin:
             if rd.get("trip_start_date"):
                 try: start_d_val = datetime.strptime(rd["trip_start_date"], "%Y-%m-%d").date()
                 except Exception: pass
-            sel_start_d = st.date_input("Tanggal Mulai Perjalanan Dinas", value=start_d_val or date.today())
-            rd["trip_start_date"] = sel_start_d.strftime("%Y-%m-%d")
+            sel_start_d = st.date_input("Tanggal Mulai Perjalanan Dinas", value=start_d_val, format="YYYY-MM-DD")
+            rd["trip_start_date"] = sel_start_d.strftime("%Y-%m-%d") if sel_start_d else ""
 
         with col_t2:
             end_d_val = None
             if rd.get("trip_end_date"):
                 try: end_d_val = datetime.strptime(rd["trip_end_date"], "%Y-%m-%d").date()
                 except Exception: pass
-            sel_end_d = st.date_input("Tanggal Selesai Perjalanan Dinas", value=end_d_val or sel_start_d)
-            if sel_end_d < sel_start_d:
+            sel_end_d = st.date_input("Tanggal Selesai Perjalanan Dinas", value=end_d_val, format="YYYY-MM-DD")
+            if sel_end_d and sel_start_d and sel_end_d < sel_start_d:
                 sel_end_d = sel_start_d
-            rd["trip_end_date"] = sel_end_d.strftime("%Y-%m-%d")
+            rd["trip_end_date"] = sel_end_d.strftime("%Y-%m-%d") if sel_end_d else ""
 
         with col_t3:
-            auto_h1 = (sel_end_d + timedelta(days=1)).strftime("%Y-%m-%d")
             lap_d_val = None
             if rd.get("tanggal_laporan"):
                 try: lap_d_val = datetime.strptime(rd["tanggal_laporan"], "%Y-%m-%d").date()
                 except Exception: pass
-            sel_lap_d = st.date_input("Tanggal Laporan (Auto H+1 Dinas)", value=lap_d_val or (sel_end_d + timedelta(days=1)))
-            rd["tanggal_laporan"] = sel_lap_d.strftime("%Y-%m-%d")
-            st.caption(f"💡 Default resmi: H+1 dari akhir dinas ({auto_h1})")
+            
+            default_lap_val = lap_d_val
+            if not default_lap_val and sel_end_d:
+                default_lap_val = sel_end_d + timedelta(days=1)
+                
+            sel_lap_d = st.date_input("Tanggal Laporan", value=default_lap_val, format="YYYY-MM-DD")
+            rd["tanggal_laporan"] = sel_lap_d.strftime("%Y-%m-%d") if sel_lap_d else ""
+            if sel_end_d:
+                auto_h1 = (sel_end_d + timedelta(days=1)).strftime("%Y-%m-%d")
+                st.caption(f"💡 Default resmi: H+1 dari akhir dinas ({auto_h1})")
+            else:
+                st.caption("💡 Disarankan: H+1 dari tanggal selesai perjalanan dinas")
 
     with st.container(border=True):
         st.markdown('<div class="section-title">👥 Susunan Personel Pelaksana Monev (Tanda Tangan Zig-Zag PU)</div>', unsafe_allow_html=True)
@@ -823,8 +795,8 @@ with tab_desa:
                             raw_notes=v_notes,
                             desa=v_item.get("desa", "Wilayah"),
                             kecamatan=v_item.get("kecamatan", ""),
-                            kabupaten=rd.get("kabupaten", "Magelang"),
-                            tahun=rd.get("tahun", "2026"),
+                            kabupaten=rd.get("kabupaten") or "Jawa Tengah",
+                            tahun=rd.get("tahun") or str(date.today().year),
                             tanggal_lap=rd.get("tanggal_laporan", ""),
                             api_key=st.session_state.gemini_api_key
                         )
@@ -910,38 +882,47 @@ with tab_foto:
                 st.write("")
                 st.write("")
                 if st.button("🚀 Terapkan Linimasa & GPS Realistis", type="primary", use_container_width=True):
-                    with st.spinner("Menghitung kluster lokasi, sebaran multi-hari, dan koordinat GPS..."):
-                        clusters = cluster_photos(st.session_state.photos)
-                        
-                        s_d, s_m, s_y = int(rd["trip_start_date"].split("-")[2]), int(rd["trip_start_date"].split("-")[1]), int(rd["trip_start_date"].split("-")[0])
-                        e_d, e_m, e_y = int(rd["trip_end_date"].split("-")[2]), int(rd["trip_end_date"].split("-")[1]), int(rd["trip_end_date"].split("-")[0])
+                    if not rd.get("trip_start_date") or not rd.get("trip_end_date"):
+                        st.error("Tanggal mulai dan tanggal selesai perjalanan dinas belum diisi di Tab Administrasi & SPT!")
+                    else:
+                        with st.spinner("Menghitung kluster lokasi, sebaran multi-hari, dan koordinat GPS..."):
+                            clusters = cluster_photos(st.session_state.photos)
+                            
+                            try:
+                                s_parts = rd["trip_start_date"].split("-")
+                                e_parts = rd["trip_end_date"].split("-")
+                                s_d, s_m, s_y = int(s_parts[2]), int(s_parts[1]), int(s_parts[0])
+                                e_d, e_m, e_y = int(e_parts[2]), int(e_parts[1]), int(e_parts[0])
+                            except Exception:
+                                s_d, s_m, s_y = 1, 1, 2026
+                                e_d, e_m, e_y = 1, 1, 2026
 
-                        for p in st.session_state.photos:
-                            v_target = p.get("desa") or (villages[0].get("desa", "") if villages else "")
-                            p["desa"] = v_target
-                            lat_val, lon_val, k_val, _ = lookup_location(v_target, p.get("kecamatan", ""), rd.get("kabupaten", ""))
-                            p["lat"] = lat_val
-                            p["lon"] = lon_val
-                            p["kecamatan"] = k_val
-
-                        timeline_res = generate_humanized_timeline(
-                            clusters=clusters,
-                            start_time_str=start_work_time,
-                            end_time_str=end_work_time,
-                            date_tuple=(s_y, s_m, s_d),
-                            end_date_tuple=(e_y, e_m, e_d)
-                        )
-                        
-                        for t_item in timeline_res:
-                            p_id = t_item.get("photo_id")
                             for p in st.session_state.photos:
-                                if p.get("id") == p_id:
-                                    p["time_str"] = t_item.get("time_str")
-                                    p["lat"] = t_item.get("lat")
-                                    p["lon"] = t_item.get("lon")
-                                    break
-                        st.success("Linimasa dinas realistis dan GPS Jitter berhasil dipetakan ke seluruh foto!")
-                        st.rerun()
+                                v_target = p.get("desa") or (villages[0].get("desa", "") if villages else "")
+                                p["desa"] = v_target
+                                lat_val, lon_val, k_val, _ = lookup_location(v_target, p.get("kecamatan", ""), rd.get("kabupaten", ""))
+                                p["lat"] = lat_val
+                                p["lon"] = lon_val
+                                p["kecamatan"] = k_val
+
+                            timeline_res = generate_humanized_timeline(
+                                clusters=clusters,
+                                start_time_str=start_work_time,
+                                end_time_str=end_work_time,
+                                date_tuple=(s_y, s_m, s_d),
+                                end_date_tuple=(e_y, e_m, e_d)
+                            )
+                            
+                            for t_item in timeline_res:
+                                p_id = t_item.get("photo_id")
+                                for p in st.session_state.photos:
+                                    if p.get("id") == p_id:
+                                        p["time_str"] = t_item.get("time_str")
+                                        p["lat"] = t_item.get("lat")
+                                        p["lon"] = t_item.get("lon")
+                                        break
+                            st.success("Linimasa dinas realistis dan GPS Jitter berhasil dipetakan ke seluruh foto!")
+                            st.rerun()
 
         st.markdown(f"##### Galeri Dokumentasi Foto ({len(st.session_state.photos)} Foto Terlampir):")
         
@@ -960,13 +941,13 @@ with tab_foto:
                             v_opts = [v.get("desa") for v in villages if v.get("desa")]
                             p_v_idx = v_opts.index(p.get("desa")) if p.get("desa") in v_opts else 0
                             p["desa"] = st.selectbox(f"Lokasi Desa:", options=v_opts or ["Desa Lapangan"], index=p_v_idx, key=f"p_desa_{p_idx}")
-                            p["dusun"] = st.text_input(f"Dusun / Titik:", value=p.get("dusun", ""), key=f"p_dusun_{p_idx}")
+                            p["dusun"] = st.text_input(f"Dusun / Titik:", value=p.get("dusun", ""), key=f"p_dusun_{p_idx}", placeholder="Contoh: Dusun Krajan")
 
                         with col_f_meta2:
                             p["lat"] = st.text_input("Latitude:", value=str(p.get("lat") or "-7.451824"), key=f"p_lat_{p_idx}")
                             p["lon"] = st.text_input("Longitude:", value=str(p.get("lon") or "110.331825"), key=f"p_lon_{p_idx}")
 
-                        p["time_str"] = st.text_input("Teks Waktu:", value=p.get("time_str") or f"Kamis, 14 Agustus 2026 10:14:23 WIB", key=f"p_time_{p_idx}")
+                        p["time_str"] = st.text_input("Teks Waktu:", value=p.get("time_str", ""), key=f"p_time_{p_idx}", placeholder="Contoh: Kamis, 14 Agustus 2026 10:14:23 WIB")
 
                         c_act1, c_act2 = st.columns([3, 1])
                         with c_act1:
@@ -976,13 +957,13 @@ with tab_foto:
                                     norm_img, _ = crop_image_bottom(norm_img, p.get("suggested_crop_bottom", 0.18))
                                 stamped = apply_stamp(
                                     norm_img,
-                                    time_str=p["time_str"],
+                                    time_str=p["time_str"] or "Kamis, 14 Agustus 2026 10:14:23 WIB",
                                     lat=p["lat"],
                                     lon=p["lon"],
                                     dusun=p["dusun"],
                                     desa=p["desa"],
                                     kecamatan=p.get("kecamatan", ""),
-                                    kabupaten=f"Kabupaten {rd.get('kabupaten')}"
+                                    kabupaten=f"Kabupaten {rd.get('kabupaten')}" if rd.get('kabupaten') else ""
                                 )
                                 st.image(stamped, caption="Pratinjau Watermark Resmi Kementerian PU", use_container_width=True)
 
@@ -1023,10 +1004,10 @@ with tab_export:
             <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,0.02);">
                 <div style="font-size:12px; font-weight:700; color:#0f2942; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px;">📋 Administrasi & Jadwal</div>
                 <div style="font-size:13px; color:#334155; line-height:1.7;">
-                    <div><strong>Kabupaten:</strong> Kabupaten {rd.get('kabupaten')}</div>
+                    <div><strong>Kabupaten:</strong> {f"Kabupaten {rd.get('kabupaten')}" if rd.get('kabupaten') else '<em>(Belum Dipilih)</em>'}</div>
                     <div><strong>Nomor SPT:</strong> {rd.get('nomor_spt') or '<em>(Belum Diisi)</em>'}</div>
-                    <div><strong>Jadwal Dinas:</strong> {rd.get('trip_start_date')} s/d {rd.get('trip_end_date')}</div>
-                    <div><strong>Tanggal Laporan:</strong> {rd.get('tanggal_laporan')} ({rd.get('tempat_pembuatan')})</div>
+                    <div><strong>Jadwal Dinas:</strong> {f"{rd.get('trip_start_date')} s/d {rd.get('trip_end_date')}" if rd.get('trip_start_date') and rd.get('trip_end_date') else '<em>(Belum Diisi)</em>'}</div>
+                    <div><strong>Tanggal Laporan:</strong> {rd.get('tanggal_laporan') or '<em>(Belum Diisi)</em>'} ({rd.get('tempat_pembuatan') or 'Tempat Belum Diisi'})</div>
                     <div><strong>Pelaksana:</strong> {len(rd.get('pelaksana', []))} Personel (Format Zig-Zag PU)</div>
                 </div>
             </div>
