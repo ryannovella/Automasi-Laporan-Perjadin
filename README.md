@@ -49,7 +49,7 @@ Cukup klik ganda file `run_app.bat`.
 
 ### Cara 2: Lewat Terminal / Command Prompt
 ```bash
-cd "G:\My Drive\Apps\Automasi Laporan Perjadin"
+cd /d "d:\Apps\Automasi Laporan Perjadin"
 python -m streamlit run app.py
 ```
 Aplikasi akan terbuka otomatis di peramban web pada alamat `http://localhost:8501`.

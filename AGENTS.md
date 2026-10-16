@@ -35,3 +35,18 @@ If the mode is unresolved, ask during/after and end the response; wait for the a
 To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` and pick Overwrite them.
 <!-- antislop:end -->
 
+---
+
+## 3. Desain & Frontend Guidelines
+Untuk pembuatan antarmuka web, perbaikan styling, atau audit UI/UX, gunakan skill dan referensi desain berikut:
+- **Taste Skill (tasteskill.dev)**:
+  - Core: `.agents/skills/design-taste-frontend/SKILL.md` (Anti-slop frontend art direction, layout & typography)
+  - Varian Desain: `high-end-visual-design`, `minimalist-ui`, `industrial-brutalist-ui`, `stitch-design-taste`, `redesign-existing-projects`
+- **Vercel Web Interface Guidelines (vercel.com/design/guidelines)**:
+  - Panduan Penuh: `.agents/skills/web-interface-guidelines/SKILL.md` (Interactions, Accessibility, Animations, Forms, Performance)
+  - Audit / Checklist: `.agents/skills/web-design-guidelines/SKILL.md`
+- **Awesome DESIGN.md (github.com/voltagent/awesome-design-md)**:
+  - Katalog Token Desain: `.agents/skills/awesome-design-md/SKILL.md`
+  - 84 Design System Brand Siap Pakai: `.agents/skills/awesome-design-md/design-md/<brand>/DESIGN.md` (Vercel, Linear, Stripe, Apple, Cursor, Claude, dll.)
+
+
